@@ -1,0 +1,891 @@
+
+Modificatori d’accesso
+
+Internal (interno al progetto)
+Modificatore d’accesso, permette l’accesso alla classe/metodo/proprietà solo all’interno del progetto (nella stessa dll)
+Protected
+Modificatore d’accesso: L'accesso è limitato alla classe o ai tipi derivati dalla classe contenitore.
+Sealed (sigillato)
+e.g. => public sealed class C1
+impedisce di ereditare ( class C2:C1 da errore) classi o metodi (impedisce l’override)
+e.g. => sealed void F() { … }
+Altri
+Modificatore d’accesso:
+o 
+* Public, private 
+protected internal
+o Visibile o è nello stesso progetto o è in classi derivate
+private protected
+o Visibile nello stesso progetto e in classi derivate 
+o (°° per me fosse più carino: internal protected) 
+file
+      file class HiddenWidget{…}
+o Visibile sono nello stesso file (es. .cs) 
+o Utile per: source-generated types (codice generato non manualmente)
+Altro
+Volatile, unsafe, readonly, override, extern
+Volatile
+condiviso tra più thread. La direttiva volatile indica al compilatore che il valore della variabile può cambiare inaspettatamente.
+Blocchi di codice (es. using, lock)
+Using
+using(eg. <apertura della connessione del db>){…}
+//gestisce la connessione (es.), chiudendola dopo il blocco
+Ha il compito di gestire risorse non gestite:
+dentro il blocco dell’using deve istanziare un oggetto che estende IDisposible
+- Es. <classe IDisposible>  … public void Dispose(){ Dispose(disposing:true); }
+Lock
+Object objectX=new Object();
+lock(objectX){…}
+// quando si trova nel blocco ‘{…}’, se c’è un altro thread che lo esegue viene bloccato (solo un thread può eseguirlo, alla volta)
+o Più esattemente, quando arriva al ‘lock’, guarda in una tabella se l’indirizzo di memoria dell’objectX è presente, se no lo mette e fa le sue cose {…}, se un altro va al lock e in questo caso l’indirizzo è presente in quella tabella, allora attende finchè si libera.
+o Simile il comportamento grazie ai ‘mutex’
+* Mutex m=new Mutex(false);
+m.WaitOne();
+…
+m.ReleaseMutex();
+// la differenza, che con questo uno esterno può forzare l’interruzione
+Try catch
+Gestisce le eccezioni, passa a prescindere da finally
+Try{
+…} catch(Expection2 ex2) {…}catch (Exception ex){…} finally{…}
+Si possono aggiungere catch per gestire l’eccezione in base al tipo.
+Si richiamano: throw new Expection2(<i parametri del costruttore>);
+si crea:
+public class Exception2 : Exception{ < costruisci i costruttori per gestire l’errore>}
+Params
+Eg: int getParam(string str,params int[] list){…}
+Int x=getParam(“ciao”,1,5,10,100);
+. permette di mettere N elementi come parametri , ed è gestita come un array
+checked 
+controllo su operatore aritmetico, da eccezione se va in overflow (OverflowException)
+(cioè se si assegna un valore superiore al valore massimo della locazione di memoria prefissa (es. int) )
+Default le operazioni sono unchecked, e se superano il valore(nessuna eccezione) torna la differenza (ricomincia da capo, esegue il wrapping dal valore massimo al valore minimo.)
+Con checked => se overflow da eccezione -> OverflowException
+Es. 
+uint a = uint.MaxValue;
+unchecked { Console.WriteLine(a + 3);  // output:  }
+try {
+    checked {   Console.WriteLine(a + 3);    }
+} catch (OverflowException e)
+{    Console.WriteLine(e.Message);  /*output: Arithmetic operation resulted in an overflow.*/}
+Collection + LINQ entity
+(System.Collection)
+IEnumerable<T>
+* Meccanismo: Iteration-based ( esecuzione differita, solo alla richiesta (es. .ToList() ) o al foreach  dell’oggetto)
+*  Alla prima richiesta, i dati vengono letti in modalità streaming: man mano che il database li invia, il foreach li processa (es. con moveNext) viene caricato all’applicazione (duque non riceve tutte le informazioni in blocco, contrariamente usando .ToList() ) (°° il client dunque richiede riga per riga al db)
+o Quando il foreach (o break) finisce, lo streaming si interrompe (col db) 
+* Padre di : 
+o Mutable
+* ICollection<T> 
+=> IList<T>
+o Read-Only
+* IReadOnlyCollection<T>
+=> IReadOnlyList<T>
+Yield
+(utile per generare un IEnumerable,
+solo per  funzioni che torna => IEnumerable,
+def. yield return x; => add(x) (aggiunge un elemento all’ IEnumerable)
+def. yield break; => esce dalla funzione (tornando dalla funzione()=>new IEnumerable )
+)
+public IEnumerable<int> TakeWhilePositive(IEnumerable<int> numbers)
+{
+    foreach (int n in numbers)
+    {
+        if (n > 0) yield return n;
+        else yield break;
+    }
+    yield return 10;
+}
+IQueryable<T>
+* Da Linq, estende IEnumerable
+* Meccanismo: Expression Tree-based ( esecuzione differita, solo alla richiesta (es. .ToList() ) o foreach ) (deferred execution)
+o Cioè:  
+1. da come è costruito l’obj dell’ IQueryable (usando linq (es. .Where(.) )), da cui si delinea
+2. un’ Expression Tree (che definisce il contenuto della query)
+3. LINQ Provider traduce l’expression tree in linguaggio specifico del DB di riferimento 
+4. E viene mandata dunque la stringa della query SQL specifica (e.g. T-SQL per SqlServer and PL/SQL per Oracle)
+o PS: tramite LINQ e dunque tutto nel client, il db riceve solo l’sql (tradotto)
+
+
+IList<T>
+Interfaccia generica per cui fornisce funzionalità di accesso e modifica indicizzata
+L’interfaccia  stretta dell’oggetto List<T> 
+È implementata:
+* List<T>
+* Arrays , 
+* Collection<T>, 
+* ObservableCollection<T>, 
+* ReadOnlyCollection<T>
+* ArrayList
+Thread (/Task)
+* Task.Run(
+o Metodo async (che aspetta la funzione) e start del thread
+o async Task<int> get(int x){ Task.Delay(3000).Wait(); return x;}
+o void getFather(){ for(int c=0;c<10;c++) 
+{ int c1=c;  // se no gli passa il puntatore a ‘c’
+Task t=Task.Run(async()=>
+{
+int x= await get(c1);
+lock(listInt) listInt.add(c1);
+});
+}
+o static List<int> listInt=[];
+1. Per interrompere un altro thread
+a. Task.Run( <func>, <cancellationToken>);
+b. CancellationTokenSource cts=new();
+c. Task.Run(<func>,cts.Token);
+d. Nel func=> if( cts.Token.IsCancellationRequested) … // se è richiesto l’interrumpt del thread ==> cts.Cancel();
+		
+Enum
+Public enum EnumName
+{
+Name,
+Surname
+}
+* ogni valore è associato ad un intero
+* EnumName.Name.ToString() => “Name”
+…{
+[Description(“è un nome”)]
+Name,
+}
+* Si possono aggiungere attributi
+Robe sulla finestra window
+* Muove il cursore in una posizione
+While(true){
+Cursor.Position=new System.Drawing.Point(Cursor.Point.X+10,Cursor.Point.Y+10);
+Thread.Sleep(1000); // in millisecondi
+}
+// sposta il cursore ogni 1 secondo
+*** Gestione File
+.	Debug.WriteLine(<stringa>)
+.	Move (string sourceDirName, string destDirName); // sposta un file in un'altra parte
+.	Directory.Create(<path+nome cartella>); // crea una cartella
+.	string path=Path.combine(path1,cartella1,cartella1.1); // crea un path usabile
+
+.	FolderBrowserDialog folder=new FolderBrowserDialog ();
+	. es. ::
+if(folder.showDialog()== DialogResult.Ok) // con folder.showDialog() apre per selezionare la cartella
+{
+DirectoryInfo d=new DirectoryInfo(folder.SelectedPath); // d da info sulla directory selezionata
+foreach(FileInfo file in d.GetFiles("*.htm"))
+{
+      FileStream fsr=File.Open(file.FullName,FileMode.Open); // file in lettura ,,, file.fullname== path + nome file completo
+StreamReader sr=new StreamReader(fsr,System.Text.Encodin.Latin); // è il canale per la lettura, settata con l'encoding 'Latin'
+/*StreamReader sr=new StreamReader(fsr,Encoding.GetEncoding(28591); //si riferisce alla codifica Latin1 (al suo codepag) 
+. PS : serve mettere la codifica sia per StreamReader che StreamWriter
+*/
+
+Directory.CreateDirectory(<path directory dove creare la directory>);
+
+StreamWrite sw=new StreamWriter(<path completo>,<bool se append>, System.Text.Encoding.Latin); // crea il canale per la scrittura ,,, e setta il tipo di codifica
+(using system.io ; using system.diagnostics;   )
+
+string line;
+while(!sr.EndOfStream) // se finisce il file fa true, se non è false , il sr.EndOfStream
+{
+line=sr.ReadLine(); // legge per ogni riga del file
+
+if(sr.EndOfStream)
+sw.Write(line);
+else
+sw.WriteLine(line); // mette un accapo 
+
+
+}
+
+sr.Close();
+sw.Close();
+
+}
+}
+.	DirectoyInfo directoryInfo=new DirectoryInfo(path);
+	FileStream fr=new ...
+	FileWriter ...
+	foreach(FileInfo fileinfo in Directory.GetFiles(sourceDir, "*.jpg"))
+	{ 
+	// string pathFile=fileinfo.selected...;
+.	/r/n (accapo)
+.	File.Copy(<path completo di origine>,<path completo di destinazione(cioè +nome del file)>)
+. Path del progetto:
+string path= AppDomain.CurrentDomain.BaseDirectory;
+*** XmlSerializer
+* Metodo per serializzare e salvare in locale
+o P.c  void SaveXml<T>(Uri uri, T item)
+{ XmlSeriaizer serializer=new XmlSerializer(typeof(T));
+Using (FileStream fs=new FileStream(uri.AbsolutePath, FileMode.Create))
+{ serializer.Serialize(fs,item);}
+}
+o P.c T? LoadXml<T>(Uri uri)
+      { FileStream fs=new FileStream(ur.AbsolutePath, FileMode.Open, FileAccess.Read);
+      XmlSerializer ser=new XmlSerilizer(typeof(T));
+      dynamic result= ser.Deserialize(fs);
+      return result;}
+o Ogni oggetto serializzato (cioè ogni variabile/proprietà) public, deve essere di tipo serializabile
+* Tipi primitivi, array (non List, o strutture varie)
+* Oggetti che  a loro volta hanno var permessi
+* Per ignorare delle proprietà mettere sopra la proprietà -> [XmlIgnore]
+* Es. per serializzare delle list 
+=>  [XmlIgnore]
+List<int> l;
+int[] l2{get=> l.toArray(); set=>value.toList();}
+*** String s
+.	int x=s.indexOf(<stringa>); // posizione in cui trova quella stringa da s
+.	string s1=s.subString(<index posizione di s>);// da 0a index da in s1	
+	string s1=s.subString(<index posizione iniziale di s>,<index finale>);// da index1 a index2 da in s1
+.	. string s=string.format(“ciao {0}{1}”,s0,s1); // sostituisce {0} con s0 e {1} con s1	
+
+*** Dati e Op con windows
+* Da gli argomenti in ingresso ad una applicazione:
+Environment.GetCommandLineArgs() // da un array di argomenti, di cui il primo è il path+file dell’eseguibile.
+***Da l’instanza di un oggetto da un’istanza
+// using Microsoft.Practices.Prism.Modularity;
+//data l’interfaccia ‘IOggetto’
+// date due classi ‘Oggetto1’ e ‘Oggetto2’
+// ognuno dei quali con i tag e con ereditarietà
+/* es. :: 
+[Export(typeof(IOggetto)] //tag
+// opp. [Export(“uno”, typeof(IOggetto)]
+Public class Oggetto1 : IOggetto  // ereditarietà
+{…}
+*/
+IOggetto item=ServiceLocator.Current.GetInstance<IOggetto>(); // da solo una istanza fra quelli  con i tag
+/* opp. 
+Se si vuole filtrare per stringa (oltre per tipo) : 
+ServiceLocator.Current.GetInstance<IOggetto>(“uno”);
+*/
+*** Generic
+* T test<T> (){…}
+* Con condizione: T test<T>() where T: Oggetto1,Oggetto2 
+{…}
+// tale che T sia uno dei due classi
+*** Reflection (usa l’info di un oggetto)
+* All properties, di un oggetto
+Type type=typeof(ObjX);
+PropertyInfo [] properties=type.GetProperties();
+* Get property, da la proprietà del tipo
+String strProperty=”Name”;
+PropertyInfo itemInfo=type.GetProperty(strProperty);
+* Get for type
+PropertyInfo itemInfo2=properties.FirstOrDefault( p=> p.PropertyType== typeof(int));
+* Set, valorizza una proprietà
+PropertyInfo itemInfo3=type.GetProperty(“Name2”);
+itemInfo3.SetValue(objX, “<Name2>”);
+* Func.
+* .  Ricopia i valori di un oggetto in un altro, a parità di nome delle proprietà
+.. public T ToCopy<T> ( dynamic ObjBody, T ObjChild)
+{
+Type typeBody=ObjBody.getType;
+Type typeChild=typeof(T);
+PropertyInfo [] proprietiesBody=typeBody.GetProperties();
+PropertyInfo [] proprietiesChild=typeChild.GetProperties();
+foreach(PropertyInfo itemPropertyBody in propetiesBody)
+ {
+If( propertiesChild.Any( (i)=> i.Name==itemPropertyBodyy.Name))
+   {
+    PropertyInfo itemChild=typeChild.GetProperty(itemPropertyBody.Name);
+    itemChild?.SetValue(ObjChild, itemPropertyBody.GetValue(ObjBody));
+   }
+ }
+Return ObjChild;
+}
+Attributi
+Sono i tag sopra a classi (es. [Export(typeOf(ITest) ]
+* Permette di dare attributi ad oggetti (, metodi e prop.) che i dati sono richiesti usando la reflection 
+* Es. public class PippoAttribute : Attribute{
+public PippoAttribute(Type tipo, int x1=10){…}
+}
+* Il nome è definito tolto ‘Attribute’ dall’es. è Pippo, il costruttore definisce i parametri che accetta
+* Dall’es. [Pippo( typeOf(ITest), x1:100 )] 
+* Es. d’uso 
+PippoAttribute attributo = (PippoAttribute)Attribute.GetCustomAttribute(typeof(TestPippo), typeof(PippoAttribute));
+       int x = attributo.x1;
+       /* [Pippo (typeOf(ITest), x1:10)]
+        class TestPippo */
+Assembly
+(dll)
+- Assembly.LoadFrom(string path)
+- Assembly.Load(byte[] rawAssembly)
+o Cosa fa: Carica un assembly direttamente dalla memoria, leggendolo come un array di byte (ad esempio se scarichi la DLL da un database o da una chiamata di rete).
+- Assembly.GetExecutingAssembly()
+o Cosa fa: Estrae l'assembly in cui è scritto il codice che stai eseguendo in quel preciso momento (nel tuo caso, il progetto WCF stesso).
+- Assembly.GetCallingAssembly()
+o Cosa fa: Estrae l'assembly che ha chiamato il metodo corrente (utile se ti trovi dentro una libreria di utility comune e vuoi sapere chi ti sta usando).
+- Assembly.GetEntryAssembly()
+o Cosa fa: Estrae l'assembly di partenza dell'intera applicazione (l'eseguibile principale .exe). Nota bene: sotto IIS/IISExpress questo metodo restituisce spesso null perché l'entry point è il processo di IIS (w3wp.exe o iisexpress.exe).
+- AppDomain.CurrentDomain.GetAssemblies()
+o Cosa fa: Non restituisce un solo assembly, ma un array (Assembly[]) di tutti gli assembly che sono già stati caricati in memoria dall'applicazione in quel momento.
+      
+Caratteri speciali
+@, verbatim identifier
+Permette di usare le parole chiave come variabili
+Es. int @var; bool[] @for; @var=10;
+Utile per una compatibilità con versioni successive (es. se viene introdotta paroli chiavi che potevano essere usate come variabili)
+Proprietà
+*  Semplice : string Name { get; set; }
+* C#v9: Settabile solo è inizializzato (se no eccezione) : string Name { get; init; }
+Eseguire il codice da file cs
+Se vuoi trattare i file C# come script (stile Python), puoi installare uno strumento dedicato:
+1. Installa il tool: dotnet tool install -g dotnet-script
+2. Esegui il file con: dotnet-script nomefile.cs
+Nota bene: Per usare la sintassi del tuo esempio senza un file di progetto (.csproj), devi avere installato l'SDK di .NET 10 (o superiore)
+e.g. di file nomeFile.cs=> Console.WriteLine("Hello"); // senza nessuna funzione o classe Main
+
+** XAML
+* Definisce la UI di WPF
+* è formato da componenti con sintassi: <Obj1 Property1=”…” …> ContentX? </Obj1>
+o es. <Label Background=”Blue” > Ciao </Label>
+o tutti gli oggetti hanno questa sintassi, anche il Binding
+Struttura
+* °Header
+o <ObjPage …/>
+* Tipo componente (es. <Window,<UserControl) e le sue proprietà (es. Width=”500” Background=”Blue” )
+* Collegamenti 
+=>  x:Class=<nameSpace>.<name classe code-behind> 
+* Import librerie 	
+=> (librerie esterne e non locali)   xmlns=”http://...” 
+=> (librerie locali) xmlns: <var>=”clr-namespace:<namespace>;assembly=”<project name>” )
+o  Risorse globali => <ObjPage.Resources>…</ObjPage.Resources>
+* Oggetti: ControlTemplate, Style, DataTemplate
+* ° Body:
+o Layout (es. StackPanel, Grid)
+o Widget (es. Button, Label)
+o Componenti importati
+* < <var del xmlns>:<componente>  … />
+Code-behing
+Code-behing, codice .cs legato allo xaml , tramite la proprietà “ x:Class =”< nameSpace e la classe del code-behind> “ /* =”< path+file del code-behind> “*/ nei tag del °main
+2. Chiamate funzioni semplici--> Vengono chiamate la funzione del code-behing, scrivendo tra virgolette il nome della funzione
+a. Es. click:”ClickBn”
+b. È una funzione che ha 2 parametri, e ritorna void:  void ClickBn( object sender, <classe creata per il componente> e )
+i. Sender: ha le proprietà del componente (es. colore, width,etc)
+ii. e : è la classe data dallo developer
+Binding
+: per creare una GUI dinamica, al cambiare delle proprietà cambia,  usando i Binding
+c. Nello xaml nella proprietà viene messa--> color: “{Binding <nome proprietà es. nomeBinding>}”
+d. nomeBinding è definito nel ViewModel, (e tale classe è collegata nel costruttore del code-behind) 
+e. Ogni volta che viene modificato una proprietà tramite il metodo: OnPropertyChanged(“<nome scritto nel Binding>”); opp. ° NotifyChanged(“<nome dato dallo Binding>”)
+f. Inoltre il binding può avere una (°o più)proprietà, cioè Mode--> Content=”{Binging <proprietà>, Mode=TwoWay}”--> permette di modificare quella proprietà da GUI (es. RadBox, textBox,etc); in default è OneWay
+Proprietà del Binding
+Sintassi: { Binding Property1=”*”, P2=”*”, …}
+Path:
+(def. Il collegamento)
+Path=ObjViewModel1 (opp {Binding ObjViewModel1}),
+Mode:
+Ecco i principali tipi/modi di binding che puoi trovare in XAML (specialmente in WPF, UWP, Xamarin.Forms):
+1. OneWay Binding
+La sorgente dati aggiorna la destinazione. (La UI riflette i dati, ma non il contrario).
+2. TwoWay Binding
+La sorgente dati e la destinazione si aggiornano a vicenda. Utile per moduli/modifica dati.
+3. OneWayToSource Binding
+Solo la destinazione aggiorna la sorgente (il contrario di OneWay).
+4. OneTime Binding
+Il binding si risolve solo una volta all’inizio, non si aggiornano più i dati.
+5. Default Binding
+Usa il comportamento predefinito della proprietà (di solito OneWay o TwoWay, a seconda della proprietà).
+RelativeSource
+Proprietà:
+* Mode= * (o default)
+o Self,FindAncestor, °°PreviousData
+* AncestorType= <Type UI>
+o Il tipo antenato da prendere (es. AncestorType=ListViewItem)
+* AncestorLevel= <num> (default=1)
+o Il numero di antenato di un certo AncestorType a salire (es. 2)
+StaticResources
+TemplateBinding
+Es. <ControlTemplate TargetType=”{x:Type control}”
+Background=”{TemplateBinding Background}”
+(prende l’oggetto del Template)
+DynamicResource ResourceKey
+StaticResource carica una volta le risorse, invece DynamicResource è una espressione che permette di aggiornare a runtime.
+* Es. Background=”{ DynamicResource  StyleBackgroundX}”, e al cambiamento di tale valore aggiorna dinamicamente la grafica
+MultiBinding
+: Chiama una funzione con dei parametri che ritorna una valore, che lo prenderà un oggetto xaml
+g. I parametri sono definiti come lista di object nelle proprietà del MultiBinding , e ognuno è un Binding
+h. La funzione è definita nella proprietà del MultiBindig in Converter-->nella “x:Key” la classe  del converter--> la funzione Converter: public object Converter(object [] values, …){…}
+i. Nel values--> lista dei valori dei binding (del multiBinding)
+ii. Es. 
+XML: 
+<!—Premesse -->
+<UserControl 
+…
+Xmlns:vm=”clsr-namespace: <nameSpace del Converter>;assembly=<°nome solution>”
+>
+<vm: ClassBackgroundConverter x:Key=”backgroundConverter”/>
+
+<!—Corpo--> 
+<°background>
+<MultiBinding Converter=”{StaticResource backgroundConverter}” >
+<Binding “colorDefault”/>
+<Binding “colorSelected”/>
+</MultiBinding>
+</background>
+o °°ConverterParameter(MultiBinding)--> Permette di definire ulteriori parametri alla funzione
+* Xaml--> <MultiBinding Converter=”…” ConverterParameter=”* , * ,*” > …
+* .cs Converter--> p.c object Converter (object[] values, <elenco dei tipi passati dal ConverterParameter>){…}
+Applicazione del Binding
+i. Per creare una lista dinamica di elementi, 
+si aggancia al componente xaml ( si mette come figlio) --> <ItemControl ItemSource=”{Binding <listaOggetti>}” >
+i. Con listaOggetti--> nel viewModel, è una proprietà :
+private ObservableCollection<classeOggetto> _listaOggetti;
+public ObservableCollection<classeOggetto> listaOggetti{ 
+get { return _listaOggetti}
+set
+{
+_listOggetti=value;
+OnPropertyChanged(“listaOggetti”); // stringa messa nello xaml, per richiamarlo nel binding
+}
+}
+ii. L’itemControl può avere come figli :
+<ItemControl.ItemTemplate>
+	<DataTemplate>
+		Es. <Label Content=”{Binding proprietaOggettoDellaListaOggetti}”/>
+	</DataTemplate>
+</ItemControl.ItemTemplate>
+iii. Dunque--> l’itemControl prende la lista di oggetti, e i figli dell’ itemControl.ietmTemplate-->dataTemplate prendono le proprietà dei singoli oggetti; che vengono popolati tramite il viewModel
+Componenti:
+UserControl
+<UserControl --> body di una page
+* <UserControl.Resource--> risorse usate, es. 
+iv. <HierarchicalDataTemplate x:Key=”NameTemplate” ItemSource=”{Binding … }” 
+v. <Style x:Key=”…” TargetType=…
+* Contenuto, tree e tab rispettiva
+vi. <Grid
+vii. <telerik:Label
+viii. <telerik:RadTabControl …>
+1. <telerik:RadTreeView 
+a. ItemTemplate=”{StaticResource NameTemplate}” --> costruisce lo stile e i componenti usati per la tree, per i nodi
+b. ItemSource=”{Binding TreeItems}” --> costruisce la tree
+c. SelectedItem=”{Binding ItemSelected}” --> alla selezione di un nodo, quella proprietà prende l’ItemSource di quel nodo
+ix. <telerik:RadGridView --> costruisce la tabella , accanto alla tree
+1. ItemSource=”{Binding ItemSelected.Children}”
+2. AutoGenerateColumn=”False”--> se true, genera le colonne in base alle proprietà dell’oggetto dell’ItemSource
+3. <telerik:RadGridView.Columns>
+a. <telerik:GridViewDataColumn 
+i. Header=”…” --> nome colonna 1
+ii. DataMemberBinding=”{Binding Node.Type}”--> da il valore per quella colonna, dall’oggetto passato da singolo ItemSelected.Children
+b. <telerik:GridViewDataColumn  --> etc etc (per ogni colonna)
+c. Opp.
+d. <telerik:GridViewColumn.CellTemplate>
+i. <DataTemplate>
+1. <StackPanel …>
+a. <TextBox Text=”{Binding Node.Text}”/>
+b. Etc etc 
+4. </ telerik:RadGridView.Columns>
+Grid
+*  <Grid>
+<Grid.Definitions>
+	<Grid.RowDefinitions>
+	<RowDefinition/> // definisci la prima righa, e le sue proprietà (es. width)
+	<RowDefinition/>
+	<RowDefinition/>
+	</Grid.RowDefinitions>
+	
+	<Grid.ColumnDefinitions>
+	<ColumnDefinition /> // definisci la prima colonna, e le sue proprietà
+	<ColumnDefinition />
+	<ColumnDefinition />
+	</Grid.ColumnDefinitions>
+</Grid.Definitions>
+// il corpo
+StackPanel
+<StackPanel Grid.Column=”0” Grid.Row=”0”> <Button Name=”bn” Click=”click1”> bn </Button> </StackPanel>
+	// stackPane adatta il bottone in base al suo testo
+
+<TextBlock Name=”text” Grid.Column=”0” Grid.Row=”1” HorizontalAlignment=”Center” VerticalAlignment=”Center”>text </TextBlock>
+// HorizontalAlignment e Vertical*, allineano il testo al centro centro
+</Grid>
+
+// nel code-behind, il metodo del click del bn--> void click1(object sender, RountedEventArgs e){text.Text=”ciao”; bn.Content=”bn111”; …}
+Intestazione Xaml
+Xmlns
+. xmlns=> spazio dei nomi predefinito ;;; xmlns:x => spazio dei nomi aggiuntivo
+. L'elemento radice inoltre contiene gli attributi xmlns e xmlns:x, 
+che indicano a un processore XAML gli spazi dei nomi XAML contenenti le definizioni dei tipi 
+per i tipi di supporto a cui il markup farà riferimento come elementi.
+. tipo personalizzato=> xmlns:custom="clr-namespace:NumericUpDownCustomControl;assembly=CustomLibrary"
+. <Page x:Class="index.Page1"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Page1">
+x (tag)
+. x:Key
+	.. registra l'oggetto in ResourcesDictionary
+. x:Name
+	..  da il nome ad un componente che usa il code behind
+. x:Static
+	.. permette di associare oggetti static
+.x:Class
+	.. specifica lo spazio dei nomi CLR e il nome della classe che offre il code-behind per una pagina XAML.
+	.. <Page x:Class="index.Page1"
+. x:Type
+StaticResource
+( richiama i componenti definiti nel Resources (locale o globali o in tutta l’applicazione) )
+Fornisce un valore per qualsiasi attributo di proprietà XAML cercando un riferimento a una risorsa già definita. Il comportamento di ricerca per tale risorsa è analogo alla ricerca in fase di caricamento, che cercherà le risorse precedentemente caricate dal markup della pagina XAML corrente e da altre origini dell'applicazione, e genererà tale valore della risorsa come valore della proprietà negli oggetti in tempo di esecuzione.
+( Usato nello xaml, per chiamare elementi nello stesso xaml, es. template, converter,etc)
+Locale (nel singolo xaml)
+<Window x:Class="index.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Window1" Height="100" Width="300">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MyBrush" Color="Gold"/>
+        <Style TargetType="Border" x:Key="PageBackground">
+            <Setter Property="BorderBrush" Value="Blue"/>
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+    </Window.Resources>
+    <Border Style="{StaticResource PageBackground}">
+        <StackPanel>
+            <TextBlock Text="Hello" />
+        </StackPanel>
+    </Border>
+</Window>
+Globale (utilizzabile ovunque)
+* Uso:
+<Window x:Class="YourNamespace.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Window1" Height="200" Width="300"
+        Background="{StaticResource BackgroundGreenBrush}">
+    <Grid>
+        <!-- Contenuto della finestra -->
+    </Grid>
+</Window>
+* Definizione:
+o Definire un ResourceDictionary esterno (es. Themes/GreenTheme.xaml)
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="BackgroundGreenBrush" Color="Green" />
+</ResourceDictionary>
+o Definire nell’app.xaml (xaml del main dell’applicazione) 
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Themes/GreenTheme.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</Application.Resources>
+* Opp. nel code-behind (App.xaml.cs)
+Usando il comando=>
+Uri dictionaryUri= new Uri(“pack://application:,,,/Telerik.Windows.Themes.Office;component/Themes/Telerik.Windows.Controls.<nome file xaml>”,UriKind.RelativeOrAbsolute);
+ Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary(){ 
+Source=dictionaryUri
+});
+** WCF
+	Intro
+* Windows comunication foundation
+* Framework per la compilazione di applicazioni orientate ai servizi
+1. Scrivere il servizio su  <IService1.cs>, nell’intefaccia
+. L’interface=> [ServiceContract] public interface IService1 {…}
+      .. Metodi dell’interfaccia=> [OperationContract] string GetData(int value);
+. Implementare:<Service1.svc> -> <Service1.cs>, Implementare IService1.cs in Service1.cs
+. prima page: in web.config sotto il tag --> <system.webserver --> <defaultDocument --> <files --><add value=”<path completo,es. Pages/FirstPage.aspx>”/>
+2. .ASPX
+a. Un html, usato per web page
+b. runat=”server” 
+i. Per comunicare con il server (e non rimanere solo in locale) si usa per ogni componente ; runat=”server”
+1. Es. <asp:Button ID=”BnBack” runat=”server” Text=”Back” />
+ii. Tutto ciò che è usato nel code-behind che avere il tag runat=”server”
+1. Eg usando l’id, si modifica lo stile di un componente=> ID_Label.text=”ciao”;
+c. Per non refreshare la pagina ad ogni interazione con runat=”server”
+i. Circondare il componente con UpdatePanel e ContentTemplate , con prima ScriptManager 
+ii. <asp:ScriptManager runat=”server”/>
+iii. <asp:UpdatePanel runat=”server”>
+1. <ContentTemplate>
+a. <..body..>
+2. </.>
+iv. </.>
+v. (chiama il server come sempre senza refresh della pagina, dunque Page_Load e il metodo )
+3. Web.config (file di configurazione wcf)
+* <system.serviceModel>
+o <services>
+* Proprietà: name=”nome della classe che implementa”
+* <endpoint>
+=> Proprietà: 
+o contract=”nome dell’interfaccia dell’endpoint della classe nel name del <service>”
+o address=”[indirizzo]”
+o binding:: (ad esempio, "basicHttpBinding", "wsHttpBinding", "netTcpBinding", ecc.)
+o bindingConfiguration
+* <endpoint> /*metadati esposti, per esportare il proxy*/
+=> Proprietà: address=”mex” binding=”mexHttpBinding” contract=”IMetadataExchange”
+o <behavior>
+o <serviceBehaviors>
+* <behavior>
+=> name (obbligatorio): Un nome univoco per questo comportamento. Questo nome viene referenziato dall'attributo behaviorConfiguration dell'elemento <service>.
+=> <serviceMetadata>: Abilita o disabilita la pubblicazione dei metadati del servizio (WSDL, XSD).
+o httpGetEnabled: Se il WSDL è accessibile via HTTP GET.
+o httpsGetEnabled: Se il WSDL è accessibile via HTTPS GET.
+=> <serviceThrottling>: Controlla il flusso di messaggi per prevenire il sovraccarico del servizio.
+=> <serviceCredentials>: Specifica le credenziali del servizio.
+=> <serviceAuthorization>: Configura le impostazioni di autorizzazione per il servizio.
+Bindings
+* <basicHttpBinding>/<wsHttpBinding>/<netTcpBinding>/<netNamedPipeBinding>/<webHttpBinding>/<customBinding>
+o Name: es. basicHttpBinding
+o °timeout
+o °maxBuffer
+o messageEncoding: Tipo di codifica del messaggio (Text, Mtom, Binary).
+o <security> : Impostazioni di sicurezza per il binding
+* mode: Modalità di sicurezza (None, Transport, Message, TransportWithMessageCredential, Both).
+* <transport>: Impostazioni di sicurezza a livello di trasporto (es. autenticazione client, protezione SSL).
+* <message>: Impostazioni di sicurezza a livello di messaggio (es. credenziali client, suite di algoritmi).
+ServiceHost
+Crea e alza un host:
+* Es. uso
+HostService host=new HostService();
+Obj1 instance=new Obj1();
+host.SetHost(http://localhost:10247/apps/<path personale>, instance); // 1027/apps per alzarlo //senza amnistratore
+…
+host.Start();
+…
+host.Stop();
+
+* Definisce
+Class HostService{
+ServiceHost Host=null;
+Thread _thread;
+ServiceHost SetHost(string url, object instanceService)
+{ SericeHost item= new ServiceHost(instanceService, new Uri(url));
+var behaviour=item.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+behavior=InstanceContextMode=InstanceContextMode.Single; // crea solo una istanza °° per qualsiasi sessione
+Host=item;
+return item;}
+void Start(){
+_thread=new Thread(()=>Host.Open());
+_thread.Start();}
+
+Void Stop(){
+Host?.Close();
+_thread.Join();}
+
+
+** WPF
+1. Windows Presentation Foundation
+a. un framework dell'interfaccia utente indipendente dalla risoluzione e che usa un motore di rendering basato su vettori, progettato per sfruttare i vantaggi dell'hardware grafico moderno.
+b. Include lo XAML (Extensible Application Markup Language) (l’aspetto)
+i. Wpf converte gli elementi dello xaml in oggetti e attributi di classi
+ii. Deriva dal XML
+iii. Code-behind, implementa la funzionalità che risponde alle interazioni dell’utente
+1. Nello Xaml è definito, x:Class=”<classe del code-behind>” e deve estendere l’oggetto (xaml) padre (es. Window di <Window … x:Class=”…” …> …. </Window> )
+ ** EggPlant
+. Op
+
+.. commenti: --, // (per la singola riga) ; (** … **) (per più righe)
+.. Put <path di eggplant> ‘s <nome funzione>
+.. Click , Click [x,y] (coordinate), Click text:”bn”
+.. MoveTo [x,y] (muove il cursore in un pto)
+.. RightClick
+.. trova sullo schermo--> ImgFound(text:”testo”,waitfor:9) (return bool) , ImgFound(image:”path/nome_img”,waitfor:9) (return bool)
+-- da le coordinate in base al text trovato
+ImageFound (text:"Main") into coordinate
+
+Condizioni/while/for
+.. if {…} then … else … end if
+.. repeat … end repeat (for, foreach)
+	… exit repeat -- ==break;
+	… repeat  with each [item] in list ... end repeat – è un foreach di una lista
+		….oppure=> repeat with item <var> in <list> … end repeat – foreach
+	… repeat  with each [key,value] in map …end repeat – è un foreach di una map
+	
+.. Leggi in un rect 
+Es.  put ReadText(rect) into textFound
+
+-- split  da stringa a lista
+set listInstr=str
+split listInstr by " "
+
+-- join  tra stringhe
+set str=listInstr
+join str using " "
+
+-- ImageRectangle(text:”testo”)
+Cerca il testo e ritorna un rettangolo
+Es. put ImageRectangle(text:”testo”) into rect
+Ps: le parentesi devono essere tonde
+-- EveryImageRectangle(text:”testo”)
+Cerca il testo e ritorna una lista di tutti i rect delle occorenze
+Es. put EveryImageRectangle (text:”testo”) into listRect
+
+
+.. inizializzare variabili
+	… set x =10 
+	.. List
+       --> put [1,2,3] into aList
+Es. put ["geranium", pi * (2 * radius), {age:42}] into mixedList // "pi_* (2 * radius)" is an expression, and "{age:42}" is a property list
+      Add--> insert 5 into aList // [1,2,3,5]
+       insert 15 into aList // [1,2,3,5,15]
+      select-->put [1,2,3,4,5] into NumberList // [1,2,3,4,5]
+      put list items 3 to last of NumberList --> [3,4,5]
+      put item 2 of NumberList into num1 --> 2 in num1
+      put items 2 to 2 of NumberList --> [2]  (a single-item list)
+      put items [4,2,5] of NumberList --> [4,2,5]
+		remove--> delete element from listIstr
+		find, contains--> if   list contains element	end if
+	.. Map--> put  {“k1”:10 , “k2”:65 } into map
+		
+.. chiamata di funzioni
+	… put ff( param1,param2,…) into x
+-- def di function
+function fff pWord , pList
+
+end fff
+.. Converting Text to Lists
+	… split "Peter-Paul-Mary" by "-" // Creates the list '[Peter,Paul,Mary]'
+	… il duale (List to text) -->es.  join ["peanut butter","bread","jelly"] using "," // Creates the string 'peanut butter,bread,jelly'
+String
+. indexOf   --> str.indexOf(“aaa”);
+	Set index to the offset of “aaa” in str
+	// va l’indice da 1 a N
+	// se non trova =0
+. concatenazione  -->  str=“a”+str
+      Set str=”a” & str
+. length   -->  x=str.length
+	Set x = Length(str)
+. subString --> str1=str.subString(index, word.Length) // (indexStart, length)
+	Put chars index to index+length(word) of str into str1
+-- replace stringa
+set str="ciaone mondo"
+replace every occurrence of "mondo" in str with ""
+. remove word in string
+	set sentence to "In a hole in the ground there lived a hobbit."
+delete words 2 to 4 of sentence
+      put sentence --> "In the ground there lived a hobbit."
+. format (es. per usare \n o \t o etc etc)
+Set str=format(“\n”)
+. func1
+put [
+ "open Iness",
+"Click  Maintenance button"
+] into listAtp
+
+put ["open","start","click"] into listAllAction
+
+put ["icon","button"] into listAllObj
+
+put ["the"] into listThingExceptionList
+
+// ++Main
+put SearchAtp(listAtp,listAllAction,listAllObj,listThingExceptionList)
+
+
+// + func
+
+function SearchAtp listAtp,listAllAction,listAllObj,listThingExceptionList
+
+repeat with each [strAtp] in listAtp
+
+// put SearchParameter
+
+set action=""
+set obj=""
+set message=""
+
+repeat with each [word] in listThingExceptionList
+put UpdateString(strAtp,word) into listStr
+set strAtp=item 1 of listStr
+end repeat 
+
+repeat with each [word] in listAction
+put UpdateString(strAtp,word) into listStr
+set strAtp=item 1 of listStr
+if item 2 of listStr is not ""
+	set action=item 2 of listStr
+end if
+end repeat 
+
+repeat with each [word] in listAllObj
+put UpdateString(strAtp,word) into listStr
+set strAtp=item 1 of listStr
+if item 2 of listStr is not ""
+	set obj=item 2 of listStr
+end if
+end repeat 
+
+spit strAtp by " "
+repeat with each [word] in strAtp
+if word is not ""
+	set message=word
+	exit repeat
+end if
+end repeat 
+
+log "----------"
+log "message:" && message
+log "obj:" && obj
+log "action:" && action
+
+put Action(message,obj,action)
+
+end repeat
+
+end SearchAtp
+
+function Action message,obj,action
+
+put EveryImageRectagle(text:message) into listRect
+
+set b=false
+
+repeat with each coordinate in listRect
+MoveTo [item 1 of coordinate,item 2 of coordinate]
+
+// action
+if action="click"
+click
+end if
+if action="open"
+DoubleClick
+end if
+
+set b=true
+exit repeat
+end repeat
+
+//if is not b ...
+end if
+
+
+end Action
+
+
+// + private
+
+function UpdateString str, wordSearch
+
+put indexSearch (str,wordSearch) into list
+set index=item 1 of list
+set wordSearchReplace=item 2 of list
+
+if index is not 0
+put chars index to index+length(wordSearch) of str into thing
+replace every occurrence of wordSearchReplace in str with ""
+end if
+z
+end UpdateString
+
+
+function indexSearch str,wordSearch
+-- set str to "open the icon"
+
+set str1 to " " & wordSearch & " "
+set index to the offset of str1 in str
+set str1 to " " & wordSearch -- per il replace
+if index is not 0
+return [index,str1]
+end if
+
+set str1 to wordSearch & " "
+set index to the offset of str1 in str
+set str1 to wordSearch
+if index=1
+	return [index,str1]
+end if
+
+set str1 to " " & wordSearch
+set index to the offset of str1 instr
+if index = length(str) - length(wordSearch)-1
+	return [index,str1]
+end if
+
+return [-1,""]
+
+end indexSearch
+
