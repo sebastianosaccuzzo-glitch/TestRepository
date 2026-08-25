@@ -1,0 +1,391 @@
+
+
+_____________________________________________________________________________________
+
+** batch (.bat)
+
+** Commenti
+* :: commento
+* rem commento :: °
+** echo
+Echo ciao :: scrive ciao
+@echo off :: non scriverà i risultati dei comando
+<comando> >nul 2>&1 :: non scriverà neanche il comando eseguito
+Es. ( <comando1>
+<comando2> …
+) >nul 2>&1
+
+
+**Visualizza l'elenco delle variabili di ambiente nel sistema corrente.
+@echo off
+set
+
+** variabili
+. set c=1
+Set /a c=%c%+1
+// per chiamare il contenuto di una variabile:: %<var>%
+** condizioni (if/else/goto)
+:ciclo
+Set /a count=%count%+1
+If %count% leq 5 goto ciclo // !=5
+If var condizione var2 ( istruzioni)
+// eq => == // non so se funziona (per solo per i numeri) 
+// leq => !=
+// > => gtr
+// >= => geq
+** da l’elenco di file e directory dato il path
+. dir “C:/…” 
+. dir “C:/…” /b /ad
+	.. /b=> torna in modo semplice (es. senza riassunto)
+	.. /ad=> torna solo le directory
+. Func
+	.. Scrive in un file i nomi dei file/directory della dir
+		…dir “C:\...” /s   /b > elenco_cartella.txt
+** if else
+if
+* eg=> if not “%var1%”==”” ( echo ciao )
+* regole rigide, sintassi
+o if<spazio><condizione><spazio>(<spazio><istruzione><spazio>)
+o serve spazio prima e dopo ‘(‘ o ‘)’
+* uso di and => if not “%var1%”==”” if not “%var2%”==””  ( echo ciao )
+o si mettono consecutivi
+else if
+* eg=> IF "%voto%"=="A" (
+    echo Eccellente
+) ELSE IF "%voto%"=="B" (
+    echo Buono
+) ELSE (
+    echo Da migliorare
+)
+o l’else deve avere prima la ‘)’ di chiusura dell’if
+**For (itera)
+itera una lista
+set list= f1 f2 f3
+for %%f in (%list%) do (
+echo %%f
+) 
+// f1
+// f2
+// f32
+Itera in base al contenuto di un file (riga per riga)
+* Es. testo.txt: 
+image1.png
+image2.png
+…
+* For /f %%f in (testo.txt) do (
+echo %%f
+)
+
+Itera un file (riga per riga)
+For /f “Tokens=1-3 delims=;” %%a in (nomeFile.txt) do(
+Echo 1=%%a
+Echo 2=%%b
+Echo 3=%%c
+)
+:: itera un file, riga per riga 
+:: %%<var/char>, gestisce i valori presi da file (es. %%x)
+:: Tokens= *(tutta la riga va in %%a)
+|| 1,3 (indica di prendere il 1° e il 3° valore separati da delims e messi il 1° in %%a e il 3° nel consecutivo di %%a (cioè %%b) )
+|| 1-3 (prende dal 1° al 3° valore, assegnado da %%a ai consecutivi (%%b e %%c), separati da delims)
+:: delims=; (indica il separatore tra gli elementi della riga)
+** scanf
+set /p str=Inserisci la stringa: 
+set /p <var>=<scritta descrittiva>
+scanf multiplo
+choice /N /C: ABC /M “scegli digitando A o  B o C…”
+if errorlevel==1 goto ID_A
+if errorlevel==2 goto ID_B
+if errorlevel==3 goto ID_C
+// digitando una lettera del gruppo es. ‘ABC’, viene popolato ‘errorlevel’ con l’indice della lettera 
+
+Errore
+* Per dare codice di errore (intercettato con if errorlevel==4 goto Start)
+o Istruzione: cmd /c exit %numDiErrore%
+**confronta 2 file e ritorna le differenze
+@echo off 
+FC C:\Users\utx004c\Desktop\cartella\prova.txt C:\Users\utx004c\Desktop\cartella\prova2.txt
+
+** trova nel file la stringa indicata, se c'è ritorna tutto il contenuto, se no niente
+@echo off 
+FIND "ciao" C:\Users\utx004c\Desktop\cartella\prova.txt
+** random 
+Set /a random= %RANDOM% %% 100
+// da 0 a 100
+// se si vuole da 10 a 100
+Set  /a differenza=100-10
+Set /a random= %RANDOM% %% %differenza%+10
+
+
+** echo il contenuto del file
+@echo off 
+TYPE C:\Users\utx004c\Desktop\cartella\prova.txt
+
+**copia file di una cartella in un'altra 
+* es. xcopy C:\Users\utx004c\Desktop\cartella C:\Users\utx004c\Desktop
+* es. xcopy test.txt FolderNew\text.txt
+* sintassi: xcopy "<nome file/*.estesione (es. *.txt)" "destinazione"
+per tutti i file .txt del folder corrente es.
+* xcopy /s /y
+*  /S: Copia anche i sottodirectory. 
+*  /Y: Sopprime la richiesta di conferma prima di sovrascrivere un file esistente. 
+*  /-Y: Richiede la conferma prima di sovrascrivere un file esistente. 
+*  /I: Se la destinazione non esiste, la forza ad essere una directory. 
+*  /H: Copia anche i file nascosti e di sistema. 
+*  /T: Crea la struttura delle directory, ma non copia i file. 
+*  /U: Copia solo i file che esistono già nella destinazione. 
+*  /K: Mantiene gli attributi dei file, incluso l'attributo di sola lettura. 
+*  /N: Copia utilizzando i nomi brevi generati. 
+
+* Altro:
+* *  /E: Copia anche i sottodirectory vuoti (deve essere usato insieme a /S). 
+* *  /Q: Non visualizza i nomi dei file durante la copia. 
+* *  /F: Visualizza i nomi completi di origine e destinazione durante la copia. 
+* *  /L: Visualizza solo i file che verrebbero copiati, senza copiarli effettivamente. 
+* *  /R: Sovrascrive i file di sola lettura. 
+* *  /O: Copia le informazioni di proprietà e ACL dei file. 
+* *  /X: Copia le impostazioni di audit dei file (implica /O). 
+* *  /Z: Copia i file di rete in modalità riavviabile. 
+* *  /V: Verifica la dimensione di ogni nuovo file. 
+* *  /W: Richiede di premere un tasto prima di iniziare la copia. 
+* *  /C: Continua la copia anche se si verificano errori. 
+* *  /G: Consente la copia di file crittografati su destinazioni che non supportano la crittografia. 
+* *  /D:data: Copia solo i file modificati dopo la data specificata. 
+* *  /M: Copia i file contrassegnati come di archivio e rimuove il flag di archivio dalla destinazione. 
+* *  /A: Copia solo i file contrassegnati come di archivio. 
+* *  /B: Copia i file come file binari. 
+* *  /J: Copia i file utilizzando il buffer I/O di grandi dimensioni.
+
+
+copy C:\Users\utx004c\Desktop\cartella C:\Users\utx004c\Desktop
+** crea un folder se non esiste--> 
+if not exist "C:\Users\utx004c\Desktop\prova\" mkdir "C:\Users\utx004c\Desktop\prova\"
+** crea un file e lo popoli
+echo testo>file.txt
+
+**creare file e mettere testo in coda con batch--> 
+@echo off 
+echo ciao>>prova.txt
+** loop
+Set contatore=1
+:loop
+…
+If !contatore! leq 5 // °se contatore !=5
+goto loop // ritorna al loop
+_____________________________
+powershell -command "Foreach-Object('(0,-65) (1,-35)' -f "$_ substring(0,65)","(Get-Item "$_ remove(0,65)")"
+
+
+imprevisto nell'espressione(istruzione) t'
+** call (chiamata a funzioni)
+Es. call :func “ciao” :: si possono passare n parametri
+…
+goto :end
+:func 
+Echo %1
+… 
+Exit /b  :: opp. goto: eof;;; questo comando dice di uscire dalla funzione e ritornare al comando dopo della ‘call’
+
+:end
+Echo end
+** try
+Dopo l’istruzione da verificare:
+es. if %errorlevel% neq 0(
+echo error
+)
+If %errorlevel%==0(
+Echo okk
+)
+
+
+** altro
+	. md …?
+** percorso dove si trova il .bat
+Echo %cd% ( corrente directory)
+Echo %~dp0 (corrente directory+\)
+Echo %~f0 (percorso completo del .bat, cioè col nome del file)
+** path assouluto in base ad un input
+Set path=”…”
+Call :pathAbsolute  path
+Goto :end
+
+:pathAbsolute
+Echo %~f1
+
+:end
+Echo end
+
+
+**Come passare i parametri ad un .bat da un .bat a un .bat
+1. Chiamante (Ciccio1.bat):
+Call Ciccio2.bat “parametro1” “par2” 
+2. Ricevente (Ciccio2.bat):
+set par1=%1  :: 1° parametro 
+set par2=%2 :: 2° 
+
+** Visual Basic
+. commenti: ‘commento
+. def. Le variabili: 
+Dim Utenti As Integer
+Dim Nome As String, Cognome As String
+
+. def. Funzione:
+	.. Procedure:
+      Sub <nome>([Parametro As <Tipo>, ...])
+...
+      End Sub
+	.. Funzioni(ritorna un valore  di As<Tipo>, col nome della funzione)
+			Function AreaCerchio(Raggio As Double) As Double
+  				AreaCerchio = Raggio * Raggio * 3.14
+      End Function	
+      .. chiama procedura: es. AreaCerchio 5.4
+      .. chiama funzione: es. Area1 = AreaCerchio(5.4)
+. string
+	.. per comporre più stringhe ==>
+       s =”ciao” 
+      MsgBox       s &” world!!!”
+	.. len=Len(text)  // da la lunghezza  del testo
+	.. a capo=> vbCrLf 
+		Es. text= “ciao” & vbCrLf & “mondo!”
+	.. maiuscolo e minuscolo => text=UCase(text) ; text=LCase(text)
+	.. substring=> da sx e da dx => text=Left(“ciao”, <length=1>) // “c” ; text=Right(“ciao”,<length=1>) //”o”
+	.. indexOf=> index=InStrRev(“home\tree”,”\”) // 5
+. print: MsgBox “messaggio”
+. iteratori:
+	.. For counter [ As datatype ] = start To end [ Step step ]
+    [ statements ]
+    [ Continue For ]
+    [ statements ]
+    [ Exit For ]
+    [ statements ]
+Next [ counter ]
+… For Each element [ As datatype ] In group
+    [ statements ]
+    [ Continue For ]
+    [ statements ]
+    [ Exit For ]
+    [ statements ]
+Next [ element ]
+Es. For I = 2 To Sqr(N)
+     If N Mod I = 0 Then
+       MsgBox "Il numero non è primo."
+     Exit For	‘ ==break;
+   End If
+ Next I		 ‘ ° ==I++
+End Sub
+.. while 
+	Do While Condizione
+...
+Loop
+Scanf
+Dim text as String
+text=InputBox(“<testo da mostrare>”,”<titolo window>”)
+
+.. ChDir ,,,This example uses the ChDir function to change the current directory or folder.
+
+. Funzioni varie:
+	.. scrivi il testo: Selection.TypeText "TypeText"
+	.. directory del file corrente: path= ActiveDocument.path
+
+HTML
+1. L’accapo
+a. ° <br> , opp. <p > <span lang=”EN-US”>&nbsp;</span></p>
+2. I pallini, testo puntato
+a. <p style=’text-indent:0.0pt’><span lang=”EN-US”>*<span style=”Time New Roman”> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span><span> Ciccio testo, e sono 7 nbsp</span></p>
+i. &nbsp;==> sono 7, sono piccoli spazietti
+ii. *==> simbolo strano, indica il puntato--> alt+250
+b. Di solito si usa ul e li
+Regex (replace)
+Note++
+Usando Replace
+Usando ‘Regular expression’ (in basso) check
+In Replace:
+	find what: <expression>
+	replace with: <content replace>
+Visual Studio
+E’ simile a Note++, la differenza è che nel replace usa il $
+Es. replace:: $1__$2__$3
+expression
+	. (…) => indica il contenitore di un componente (che nel replace è indicabile con il numero sequenziale di questi oggetti 
+      (es.find: ([a-zA-Z]) _([0-9])  ; replace:  \1 , \2, etc)
+	. […]=> set di caratteri 
+      (es. ([a-zA-Z]) , una lettera dalla ‘a’ alla ‘Z’ ; oppure ([0-9]) un numero 
+	. [^…] => set di caratteri negato (l’opposto di ciò che è definito)
+	. (.*?)=> qualsiasi cosa (più caratteri) su una riga
+	. <singolo elemento>? => indica che l’elemento può non esistere 
+      (es. </?span>,prende sia <span> che </span>)
+	. ((.*\n)*?.*) => qualsiasi cosa in più linee
+	. ((?:.*\r?\n){10}) => salta X(=10) righe
+	. (\d)=> uguale a ([0-9])
+	. (?!...) : Lookahead negativo. Controlla che all'interno del testo non si verifichi il pattern successivo.
+		.. (\b\d+\b)=> cerca un numero con due cifre (es. 30) che non contiene in una parola (es. non è in: ABC35)(\b=> confine di parola) 
+Esempio
+. find:: <h([0-9])> (.*?) </h([0-9])
+. replace:: \1__\2__\3 (// Note++)
+. replace:: $1__$2__$3 (//visual studio)
+* Search (Note++)
+o \A => trova ogni inizio di ogni file cercato
+* Es. trova: \A, replace: “inizio file\r\n”
+	
+Excel
+* Funzioni
+o =Conta.se(C:C;A1)>0 
+* => True or False
+* Verifica se A1 è nella colonna C
+* (C:C).any(i=>i==A1);
+Funzioni C#
+
+ThreadItem (lavora in parallelo su una grossa lista)
+p.c class ThreadItem<T>{
+p.c ThreadItem(List<T> list, int lengthBlock=1){ 
+this.list=list; this.lengthBlock=lengthBlock;
+numBlockMax=list.Count /lengthBlock + (list.Count%lengthBlock==0?0:1);
+}
+p.c List<T> list;
+p.c int lengthBlock=0;
+p.c int numMaxBlock=0;
+
+p.c async Task<List<T>> Run()
+{
+List<T> result=new List<T>();
+
+List<T>[] resultThread
+List<Task<List<T>>> listTask=new List<Task<List<T>>>();
+for(int i=0; i<numBlockMax; i++) 
+{
+int j=i; // in questo caso non serve, ma quando lo incapsula crea un ref nuovo ed è utile
+listTask.Add(DoWork(j));
+}
+resultThread=await Task.WhenAll(listTask);
+
+foreach(var itemThread in resultThread) result.AddRange(itemThread); 
+return result;
+}
+Private Task<List<T>> DoWork(int numBlock)
+{
+List<T> listDoWork=new List<T>();
+int indexStart=numBlock* lengthBlock;
+for(int c=0; c<lengthBlcok; c++)
+if(this.list.Count>indexStart+c) listDoWork.Add(this.list[indexStart+c]);
+return Task.FromResult(listDoWork);
+}
+}
+HostService (host su manaualmente)
+Class HostService{
+ServiceHost Host=null;
+Thread _thread;
+ServiceHost SetHost(string url, object instanceService)
+{ SericeHost item= new ServiceHost(instanceService, new Uri(url));
+var behaviour=item.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+behavior=InstanceContextMode=InstanceContextMode.Single; // crea solo una istanza °° per qualsiasi sessione
+Host=item;
+return item;}
+void Start(){
+_thread=new Thread(()=>Host.Open());
+_thread.Start();}
+
+Void Stop(){
+Host?.Close();
+_thread.Join();}
+
+
+

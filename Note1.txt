@@ -1,0 +1,882 @@
+
+Sommario
+21.05.26
+*NOTE	4
+ShutCut	4
+** Visual studio	4
+CsProj	4
+***Debug	5
+Break Point	5
+Immediate Window	5
+Watch	5
+OutPut	5
+Call hierarchy	5
+***Build	5
+***Propertie Solution(del progetto)	6
+*** Genera classi cs da xml file	6
+** .Net	6
+Architettura	6
+** Oracle	12
+Query	12
+Functionality	13
+** C#	15
+Tipi	15
+Constructor constraint(Vincolo di costruttore)	16
+Interface and Abstract	16
+Modificatore using	17
+Modificatori (di comportamento)	17
+Modificatori d’accesso	19
+Blocchi di codice (es. using, lock)	19
+Collection + LINQ entity	21
+Thread (/Task)	21
+Enum	21
+Robe sulla finestra window	22
+*** Gestione File	22
+*** XmlSerializer	23
+*** String s	24
+*** Dati e Op con windows	24
+***Da l’instanza di un oggetto da un’istanza	24
+*** Generic	25
+*** Reflection (usa l’info di un oggetto)	25
+Caratteri speciali	26
+Eseguire il codice da file cs	26
+** XAML	26
+Struttura	26
+Code-behing	27
+Binding	27
+RelativeSource	28
+StaticResources	28
+TemplateBinding	28
+DynamicResource ResourceKey	28
+MultiBinding	28
+Applicazione del Binding	29
+Componenti:	29
+Intestazione Xaml	30
+** WCF	32
+Intro	32
+1.	Scrivere il servizio su  <IService1.cs>, nell’intefaccia	32
+2.	.ASPX	33
+3.	Web.config (file di configurazione wcf)	33
+ServiceHost	34
+** WPF	35
+** EggPlant	35
+. Op	35
+Condizioni/while/for	35
+.. Leggi in un rect	35
+.. List	36
+String	37
+. format	37
+** batch (.bat)	42
+** Commenti	42
+** echo	42
+**Visualizza l'elenco delle variabili di ambiente nel sistema corrente.	42
+** variabili	42
+** condizioni (if/else/goto)	43
+**For (itera)	43
+** scanf	44
+**confronta 2 file e ritorna le differenze	44
+** trova nel file la stringa indicata, se c'è ritorna tutto il contenuto, se no niente	44
+** echo il contenuto del file	45
+**copia file di una cartella in un'altra	45
+** crea un folder se non esiste-->	46
+** crea un file e lo popoli	46
+**creare file e mettere testo in coda con batch-->	46
+** loop	46
+** call (chiamata a funzioni)	46
+** try	47
+** percorso dove si trova il .bat	47
+** path assouluto in base ad un input	47
+**Come passare i parametri ad un .bat da un .bat a un .bat	47
+** Visual Basic	48
+Scanf	49
+HTML	49
+Regex (replace)	50
+Note++	50
+Visual Studio	50
+expression	50
+Excel	51
+Funzioni C#	51
+ThreadItem (lavora in parallelo su una grossa lista)	51
+HostService (host su manaualmente)	52
+
+
+
+
+
+*NOTE
+Questions
+1 Hardware 
+      Heap, stack differenza
+
+
+2-3 Client Server
+      .Wsdl e svc  , che serve, che informazioni contiene
+	(e .xsd)
+	Quali altri metodi esistno per definire lo schema comune tra client e server
+      Refresh page
+<asp:ScriptManager runat=”server”/>
+<asp:UpdatePanel runat=”server”>
+2 Software
+      Record
+      Invoke, thread principale e non
+      Thread - Task
+
+ShutCut
+* Es. Maiuscono o minuscolo
+o Ctrl+shift+U --> Maiuscolo ; Ctrl+U--> minuscolo ;  (su note++ es.)
+o Alt e drag and drop, prende la colonna e modifica contemporaneamente più righe
+o Ctrl+D --> duplica la riga opp. La parte selezionata
+o Ctrl+H --> replace
+o Ctrl+remove -->  elimina parole alla volta
+o Ctrl+ frecce--> salta parola per parola
+o Click, Shift+click --> seleziona tutta l’area tra il 1° click e il 2° 
+o Window+V --> blocco note, lista di robe copiate
+o Window+E--> apri il folder
+o Window+Tab-->  solleva tutte le pagine
+o Win+space--> cambia la lingua tastiera
+Develop
+(1) Hardware
+- SO
+   Cpu, memoria	
+o Ram, Dram
+o Disco rigido
+      Scheduling (dei processi)
+      Gestione della memoria 
+o Heap, stack
+      Gestione delle risorse
+      SO (system call)
+      (1.2) Hardware<->Software
+Framework 
+Puntatori 
+Instanziazione
+Prestazioni 
+Allocazione di memoria 
+Connessione con l’esterno
+Operatori  e variabili 
+Complessità O(.)
+Uso di risorse locali (file system)
+Serializzazione e deserializzazione 
+(2) Software
+Requisiti
+Progettazione
+      Archiettura software 
+N-tier
+Micro servizi
+Monolitico
+Designer Pattern
+* MVVM
+* M
+Sviluppo
+V
+Style 
+o # E.g. StaticResources
+Theme
+Component
+Collection
+notify
+VM
+* # Notify (onPropertyChanged)
+VM-V
+* # DataContext
+* # Binding
+
+M
+Thread/Task/Dispatcher
+o Lock
+Design Pattern
+o Singletton, factory, proxy
+Dipendency Injection (# MEF, # ServiceLocator (Prism) )
+Collection, uso dei tipi
+Delegate, Func, Event
+Generics T (where)
+Tipi di struttura dati (struct, record)
+Parole chiave (public, private)
+Disposable (using)
+Override, new , overloading
+tipi
+(Attributi)
+(Eccezioni, try catch finally)
+DAL
+Data Model (-ORM)
+      Mapping del DB
+o #DbSet
+o Constrain nell’ORM
+connessione col DB, # DbContext,
+Disposable (using)
+Connessioni al server (ai servizi)
+Richieste http
+Richieste restfull e soap
+# LINQ
+Serializzazione (Json)
+proxy
+Test
+Aggiornamento
+Test (verifica)
+(2.3) Software<->Internet
+Connessione al DB
+Connessione al Server
+Fare API 
+Uso di Cloud
+Richieste HTTP 
+Richieste restful e soap
+Richieste con socket 
+(3) Internet
+Server
+o Gestione degli host 
+o Config
+o Gestione delle sessioni 
+o Authentication and Authorization
+* OAuth
+o Rest API (creare)
+* JSOn 
+DB
+o Relazionale e non relazionale
+o SQL
+* Modellazione DB ( eg ER)
+* Query: DDM, DDL (°)
+* Vincoli (costrizioni) (PK, FK)
+* Index
+* Permessi (grant)
+* View, processi, trigger
+API 
+o (di terze parti)
+AI 
+Cloud 
+Web Page
+o Pagina (UI e logica)
+o Cookie
+o Sessioni
+
+
+(3.1) Internet<->Hardware
+Socket
+DNS
+Firewall 
+Proxy
+Sicurezza di accesso
+** Visual studio
+Shurt cut
+* Ctrl+T
+o Cerca per tipo-metodo
+* Ctrl+M,Ctrl+O 
+o Collapse per definizione
+\\\Struttura (folder)
+*** IDE
+. GUI--> Per aprire la finestra in cui si possono scegliere i componenti, vai finestra(in alto a dx)-->reimposta layout finestra
+. Source a dx (c’è tutto il progetto in alberatura)
+*** Create project
+	. Quando si crea un progetto WPF, per eseguirlo bisogna resettare dotnet, per creare tutti i file necessari--> Tools--> Nu Get Package Manager--> Package Manager Console --> scrivere: dotnet restore (ora funziona)
+CsProj
+* Sezioni: 
+1. <Project>: Il tag radice che definisce l'SDK utilizzato (es. Microsoft.NET.Sdk).
+2. <PropertyGroup>: Contiene le impostazioni generali del progetto come il framework di destinazione (<TargetFramework>), la versione del linguaggio, il tipo di output (Exe o Library) e i metadati dell'assembly.
+a. <OutputType>Exe</OutputType> // eseguibile o libreria
+b. <TargetFramework>net8.0</TargetFramework> // versione progetto
+3. <ItemGroup>: Questa sezione è ripetibile e raggruppa le risorse esterne. Al suo interno troviamo:
+o <PackageReference>: Per i pacchetti gestiti tramite NuGet.
+o <ProjectReference>: Per referenziare altri progetti all'interno della stessa soluzione.
+o  <Reference>: Per referenziare direttamente file .dll fisici sul disco.
+* <Private>True</Private> => true: la dll è copiato localmente; false: la presa è quella dal path//todo
+o  Altro:
+* Per includere o escludere file di codice o risorse dal progetto. 
+* <Compile>
+* Es. collegamento con file cs
+* <None>
+*  <Content>
+
+NuGet
+* Caricamento di dll mancanti usando NuGet quando si fa build
+o Dal file ‘packages.config’ sono definiti le dll e le versioni, delle librerie che si prendono da NuGet (cioè da internet) 
+***Debug
+1. Debug--> F5
+2. Step succ--> F10 (l’istruzione successiva)
+3. Step into--> F11 (entra nella funzione)
+4. Step out--> shift+F11 (esce dalla funzione)
+5. Go to definition-->  ctrl+click (va alla definizione, es. di una funzione)
+6. Go Implementation--> dove è implementato una certa interfaccia/funzione di interfacce
+7. Call stack--> mostra la gerarchia di chiamate ( da dove ti trovi)
+a. Es. Uso:: vai in eccezione, metti in pausa, call stack, e vedi la gerarchia fin che si trova il catch di partenza, dunque il problema sta nel try (e si mette un breakpoint e si rifà il giro)
+8. BookMark--> segna righe di codice, per passare da una riga ad un’altra facilmente
+Break Point 
+(solo in debug, si possono importare o esportare come file .xml)
+	.. -> conditions( si possono mettere delle condizioni, es. n. hit, una condizione,…)
+	.. -> e disable, [disable all , enable all<= (in debug, sopra)	]
+. si può rinominare (edit label)
+. si può esportare (o importare) in file .xml
+Immediate Window 	
+o Si possono mandare istruzioni (solo una riga) a runtime 
+o Esclusi i LINQ
+Watch
+o Una variabile nel codice, col dx e AddWatch, si mette in evidenza in questa schermata, mostra come viene implementata
+OutPut
+o Dove va i printf, e i pre-build , i post-build (codice in .bat)
+Call hierarchy
+o  mostra la gerarchia di chiamate
+o Utile per vedere la gerarchia di un metodo/proprietà di una interfaccia, mostra le varie implementazioni
+o Mostra (To: ) chi lo chiama, (From: ) cosa chiama, (Implemnts: ) chi lo implementa (nel caso di uso di interfacce/ ereditarietà)
+***Build
+Rebuild Solution (rebuilda tutto), Build Solution( builda solo ciò che è stato modificato), Clean Solution (pulisce la solution)
+PS: build--> compila il codice, costruisce l’eseguibile nella diractury “Binary “
+Il sorgente si trova nella directory “Client”
+***Propertie Solution(del progetto)
+* Application
+o Nome applicazione
+* Build
+o Configuration--> indice il tipo di debug (debug, release)
+o °° Platform (any CPU)
+o Output--> path dove va il Compilato (e l’eseguibile), cioè il debug
+* Build Events
+o Pre build--> operazioni sui file prima della build( di compilare) (comandi come nel cmd/prompt dei comandi, cioè con comandi dei file .bat )
+o Post build--> idem dopo la build
+o Riferimenti a path di progetto:
+* $(TargetDir) ==> path dell’out (dove sarà l’exe)
+* $(ProjectDir)==> path del progetto (singolo, dov’è la solution)
+* $(SolutionDir)==> path del progetto (generale)
+* $(TargetFileName) ==> nome dell’eseguibile con estensione
+* $(TargetName) ==> °nome del progetto
+* $(ConfigurationName) ==> nome del config di compilazione (es. Debug o Release)
+* Debug
+o Start action--> definisce dove eseguire l’eseguibile, ° cioè dov’è il folder del debug
+* Altro:
+o Se ci sono più progetti(solution) in una stessa applicazione, per definire la solution main, si va nella tendina a dx nella “solution explorer”-->click dx sulla solution-->click (al centro) “Set as Startup Project”
+*** Genera classi cs da xml file
+* In visual studio 22, nel ‘Developer PowerShell’(Opp. Nel cmd di visual studio 22 )
+Eseguire i comandi: 
+cd <path dov’è il file xml>
+xsd.exe nomeFile.xml  // genera nomeFile.xsd
+xsd.exe /c nomeFile.xsd // genera nomeFIle.xml (/c per generare la classe)
+
+
+** .Net
+Architettura
+N-tier (con MVVM)
+1-5 per ogni Modulo (traversalmente per ogni progetto: che contiene UI, Service)
+1. UI
+a. V, VM
+2. Service
+a. M
+b. La logica (busness logic)
+3. DAL
+a. Data access layer (manipola i dati, dell’orm)
+4. ORM
+a. Mappa e def. le strutture dati
+5. EI
+a. External interface: interfacce verso l’esterno
+b. Interface, adapter
+c. Eg. API/Service, servizi esposti all’esterno (implementazioni)
+*  (°° Infrastructure)
+d. Modulo centrale, per far comunicare tra Moduli 
+e. Ogni Modulo-> UI, Service, DAL, ORM, EI
+f. EI-> tutte le interface che con il MEF prendono l’implementazione dai singoli Moduli  (così comunicano tra Moduli)
+g. Le parti comuni utilizzati tra i Moduli (ORM, DAL, Service, UI)
+EI (External Interface)
+MEF
+. Management Extensible framework
+. ( Dipendency injection )
+. Def:
+ [Export(typeof( IInterfaccia) )] // segnala che la classe sotto implementa IInterfaccia, e da cui può attingere per implementare utilizzando il MEF
+/* Opp. [Export(“value descrittivo”,typeof(IInterfaccia) )]
+[Import(“value descrittivo”)]
+p.c IInterfaccia X1;
+*/
+
+[ PartCreationPolicy(CreationPolicy.NonShared)] // da una opzione per l’export, dice che non funge da singleton (istanzia solo una volta), ma istanza per ogni volta è chiesto
+p.c class Implentazione : IInterfaccia {…}
+. Utilizzo:
+.. [Import] // sopra una variabile, per importare una istanza tramite interface
+p.e IInterfaccia2 x2;
+
+.. class ObjectX1{
+[ImportingConstructor] // qui dipendency injection, nel costruttore fa import MEF su IMessageSender
+    public ObjectX1 (IMessageSender messageSender)
+    {
+.. [ImportMany] // import su tutte le instance possibile con quell’interfaccia
+List<IInterfaccia> list; // °°
+
+.. si usa: IInterfaccia obj1=ServiceLocator.Current.GetInstace<IInterfaccia>();
+.. si usa per molti: List<IInterfaccia> obj1=ServiceLocator.Current.GetAllInstace<IInterfaccia>().ToList();
+
+
+
+DataModel ( - ORM)
+° Classi usate nel programma;
+^ C’è l’ORM(Entity framwork)--> ° ° Classi del db (dalle tabelle alle classi);
+Connection to DB Oracle
+// da c#
+// definisce una stringa di connessione, con tutte le info per connettersi (tra cui user)
+string connString = "User Id=scott;Password=tiger;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SID=ORCL)));"; 
+// opp// connString=”USER ID=/;… // per indicare di prendere l’utente di windows (della macchina) e la password dell’utente windows
+// opp// connString=”USER ID=sys; PASSWORD=password1;DBA Privilege=SYSDBA;… // per connettersi come amnistratore
+OracleConnetionStringBuilder oracleString=new  OracleConnetionStringBuilder(connString);
+OracleConnection conn=new OracleConnection(oracleString.ConnectionString);
+if(conn.State!=ConnectionState.Open)
+conn.Open();
+// se non si rompe si può usare ‘conn’ per fare richiesta al db
+Per mostare i dati sensibili (utente e password)
+Aggiungere alla stringa di conessione : …;PERSIST SECURITY INFO=true;
+PS: SqlNetAuthenticationServices
+OracleConfiguration.SqlNetAuthenticationServices=”nts”;
+// serve a configurare l'autenticazione di rete Oracle tramite Oracle.ManagedDataAccess, indicando che vuoi usare Windows Authentication (NTS).
+
+
+
+ORM (entity framework)
+1. Creazione--> creare una classe XContext che extends DbContext
+a. Variabili--> DbSet<TabClass> tabClass=new Dbset<TabClass>(); // N DbSet per ogni tabella che usiamo
+b. Metodo--> ModelCreating ==>qui si prendono le relazioni tra tabelle (classi)
+c. Salvare le modifiche ==>XContext.saveChange(); // ° fa un commit
+d. Per aggiornare una tabClass==>XContext.TabClass.add( tabClass); 
+// con TabClass--> DbSet<…>
+// tabClass--> oggetto con la stessa struttura della tabellaClasse, che viene passata
+e. Nella classe TabClass--> nel costruttore ci sono le eventuali relazioni con altre tabelleClassi
+i. Es. This.tabClass=new HashSet<TabClass2>();  // tabClass--> proprietà della TabClass
+2. Uso
+i. Istanziazione:
+1. using( XContext context=new XContext() ) {…} 
+2. l’using gestisce la connesione, chiudendola quando si esce dal blocco dell’using, se accumola le connesione nel db e può riempirsi il pool.
+ii. Es. XContext.TabClass.where(x=><bool, x-->riga della tabella>).firstOrDefault();
+1. XContext--> DbContext
+2. TabClass--> DbSet
+iii. Ritorna il tipo IQueryable<TabClass> --> XContext.TabClass.<op. sql>;
+// es. where-select-orderBy --> solo ( tab=> tab.etc ) e non una funzione (--> (x){return x.prova;} )
+iv. Ritorna il tipo IEnumerable<TabClass> --> list=XContext.TabClass.toList();
+1. Permette di iterare le righe con un foreach (foreach(TabClass tab in list … )
+2. E inoltre si possono usare operazioni sql --> list.where(…).select(…).etc
+3. Inoltre prendono tale op. funzioni (dunque si possono ricondurre es. where( (x) => { return x.prova; } ) , dunque si possono mettere più istruzioni )
+b. JOIN
+i. var source=listA.AsQueryable().Join(
+listB, // la lista che fa join
+itemA=> new {itemA.name, itemA.surname} // indica le chiavi per cui si fa la ‘on’ , .con uguaglianza con le chiavi B , in questo caso un insieme di chiavi da confrontare, ma funziona anche con una solo chiave (senza new {…} )
+itemB=> new {itemB.name, itemB.surname} // chiavi list B
+(listA, listB) // le due liste
+=>new { <nome_campo>=listA, <nome_campo2>=listB.name};
+-->Restituisce una classe nuova , una lista anonima, con due campi (in questo caso) , nome_campo e nome_campo2, l’uno ha elemento della lista (anche un oggetto di una classe) e l’altra una stringa
+Query Diretta (Context.Database.SqlQuery)
+* Select : Tramite query in string, usa la funzione Context.Database.SqlQuery<T>(strSQL); 
+o Con Context--> oggetto con classe che estende DbContext
+o Es. string strSQL=”Select * from table “; Context.Database.SqlQuery<T>(strSQL);
+* Command: 
+o Eg. String query=”insert into TabX (par1,par2) values (:par11,:par22)”;
+o Eg. Context.Database.ExecuteSqlCommand(query, 
+      new OracleParameter(“par11”, par11X),
+      new OracleParameter(“par22”,par22X) );
+o Differisce in base al DB, 
+* In oracle => nell’insert=> :par11, nel command=> new OracleParamter(“par11”,.)
+* In sqlServer=> nell’insert=> @par11, nel command=> new SqlParameter(“@par11”,.)
+DAL (Data Access Layer)
+^ C’è LINQ;
+LINQ
+1. Language integrated Query--> è un componente .net  permette di fare interrogazioni su oggetti tramite una sintassi simile al SQL
+2. Permette di interrogare, proiettare e filtrare dati in matrici, classi enumerabili, XML, DB relazionali e sorgenti di dati di terze parti.
+3. Es. 
+LINQ
+SQL
+1. var q= from c in t_citta
+Where c.nome=’CT’
+Select c;
+select c.*
+from t_citta c
+where c.nome=’CT’
+2.  var q=from c in t_citta
+where c.regione.nome=’Sicily’
+select c;
+Select c.*
+From t_citta c join regione r on c.id=r.id_citta
+Where r.nome=’Sicily’;
+      (La 2.) il linq ha un join implicito, tra tabelle in relazione (chiamate col punto).
+* Sintassi : Sintassi dei Metodi (Method Syntax) e Sintassi di Query (Query Syntax):
+
+* Sintassi dei Metodi (Method Syntax):
+var risultato = lista.Where(x => x.Valore > 10).OrderBy(x => x.Nome);
+
+* Sintassi di Query (Query Syntax):
+var risultato = from x in lista
+                where x.Valore > 10
+                orderby x.Nome
+                select x;
+* Ritorna : IEnumerable<T> or IQueryable 
+* . Viene inviata una sola istruzione SQL (es. SELECT * FROM Tabella) al database quando inizi l'iterazione (foreach)
+o Il meccanismo del "Buffering" di rete
+o Il database non "spara" tutti i milioni di righe in una volta sola nella RAM del tuo server applicativo. Il driver del database (il Provider ADO.NET):
+* .. Apre una connessione e mantiene un cursore aperto sul database.
+* .. Riceve i dati a blocchi (chiamati TDS packets o fetch buffer).
+* .. Mentre tu fai foreach, il driver legge i dati già arrivati nel buffer locale. Quando il buffer si svuota, il driver chiede al database il "pezzo" successivo della stessa query.
+* .. Sì, durante uno streaming LINQ verso un DB, la connessione rimane occupata e aperta finché non hai finito di scorrere tutti i dati o non chiudi l'enumeratore.
+* Questa sezione contiene le parole chiave contestuali usate nelle espressioni di query.
+o from, where, select, group, into, orderby, join, let, in, on, equals, by, ascending, descending
+
+* . errori:
+o ..  "There is already an open DataReader associated with this Command".
+o .. "The DbContext has been disposed",
+M (Model)
+VM (ViewModel)
+Dove ci sono le proprietà usate tramite il Binding con lo Xaml;
+E’ richiamato nel costruttore del code-behind;
+V (View)
+La parte della GUI--> file:Xaml e code-behind (.cs) 
+* XAML: è un linguaggio di markup, che delinea la GUI ( è tipo html ma con funzionalità in più)
+* Code-behind: è il codice di supporto allo Xaml, per gli eventi chiamati; 
+è collegato allo xaml tramite la proprietà “ x:Class =”< nameSpace e la classe del code-behind> “ /* =”< path+file del code-behind> “*/ (nello xaml);
+è una classe partial;
+prende i metodi chiamati dallo xaml , es. il click;
+Chiamata ad una Window
+	Base
+1. Costruisci la window-->xaml,code-bihind, viewModel
+2. Nella window dove fa la chiamata, inserire:
+a. Xaml (oggetto che collega la window da chiamare)-->
+<i:EventTrigger EventName=”Raised” SourceObject=”{ Binding RequestWindow}”>
+      <prism: PopupWindowAction IsModal=”True”>
+      	<prism: PopupWindowAction.WindowContent>
+      		<views: WindowName/>
+      </…>
+				</…>
+			</…>
+b. viewModel--> 
+i. definire e inizializzare la proprietà--> InteractionRequest<Confirmation>
+opp. InteractionRequest<EventShowDialogNotification<classe1(usata dalla window)> WindowRequest;
+- PS: quando si alza l’evento (° quando va in focus la window “padre”) viene popolato il metodo Raised, utile per la chiamata alla window (cioè *.Raise(…) )
+ii. chiamare la window-->
+EventShowDialogNotification<classe1> notification=new EventShowDialogNotification<classe1>(oggetoClasse1);
+
+cl1.Content=oggetoPerWindow;
+cl1.Title=”title”;
+
+WindowRequest.Raise( notification,
+ confirmation=> { 
+if(confirmation.Confirmed)
+{
+ContentX= Confirmation.Content;
+}
+}
+PropertyInfo, generic window
+* Da quello base
+1. Nella classe, dell’oggettoClasse1, inserire sopra le proprietà d’interesse per la tabella=> 
+[LocalizeDisplayName(“<nome colonna>”)]
+2. <eventTrigger , xaml--> InteractionRequest<Confirmation>, viewModel proprietà --> *.Raise(new Confirmation( 
+Content= <oggetoClasse1>,
+Title=<title>), …
+ , viewModel chiamata alla window
+Prism
+* UI (Xaml) Padre:
+o Trigger:
+* LogPopup
+=> WindowContent: UIx
+* SourceObject:InterationRequest<EventShowDialogNotification<ObjX>> name_PropertyEvent
+=> Nel VM
+=> objX : INotifyPropertyChanging
+* click bn
+o namePropertyEvent.raise(EventShowDialogNotification<.> , value=>{…} )
+o 
+
+** Oracle
+Query
+Create table-->  Es.
+CREATE TABLE suppliers
+( supplier_id number(10) not null,
+  supplier_name varchar2(50) not null,
+  city varchar2(50),
+  CONSTRAINT suppliers_pk PRIMARY KEY (supplier_id)
+);
+Insert--> insert into <table name> (<campo1>,[<campo2>,…]) values (<valore campo1>,[...]);
+Select--> select <colonne, es. citta.name, regione.* opp.  * >
+From <table> …
+a. Order by:
+i. Order by decode (<valore/campo, es. <campo1>, <valore1>, <valore per ordinare legato al valore 1>, <valore2 > ,… , default),
+1. Es. order by decode (trim(nome) , ‘ciccio’,10 , ‘salvo’,3 , ‘ alfio’ , 7 , 0)
+2. Lo ordina--> salvo , alfio , ciccio
+ii. Desc--> per dare un ordine discendente 
+1. Es. select * from tab order by name desc
+Update--> 
+UPDATE table
+SET column1 = expression1,
+    column2 = expression2,
+    ...
+    column_n = expression_n
+[WHERE conditions];
+Alter--> es. alter table <table_name> alter column <campo> varchar(50);
+b. Aggiunge una campo (colonna) con la definizione(i vincoli)--> 
+ALTER TABLE table_name
+ADD column_name column_definition;
+c. Modifica i vincoli di un campo (colonna)-->
+ALTER TABLE table_name
+  MODIFY column_name column_type;
+i. Es. 
+ALTER TABLE customers
+  MODIFY customer_name varchar2(100) NOT NULL;
+Tipi :
+      NUMBER --> numero che sia un int o un double
+ii. Si. NUMBER(<n. cifre>,<scala, precisione> )
+1. N. cifre--> numero di cifre del numero (es. =2--> 15 è il valore)
+2. Scala--> numero di cifre dietro la virgola
+a. Es. =0 --> sarebbe un int
+b. Es. =2--> un double , es. 0,24
+      RAW-BLOB ( byte[] )
+iii. RAW(dimensione)Fino a 2000 byte (o 32.767 se esteso)Stringhe brevi convertite, piccoli token, ID binari (GUID).
+iv. BLOB (Binary Large Object)Fino a 4 GigabyteFile completi (PDF, immagini), archivi ZIP, testi enormi in byte.
+ CLOB
+Il CLOB è un oggetto di testo (corrisponde a string in C#).
+fino a 4 Gigabyte
+Testi lunghi, interi documenti Word, file XML, JSON di grandi dimensioni.
+Other:
+Filtra in base alla alberatura (Connect by prior … start with …)
+b. Quando una tabella contiene righe fra di loro in relazione ( padre ,figlio, nipote) in base ad uno o più valori dei campi delle righe
+c. Es. Select * 
+From Tab
+Connect by prior Padre= Figlio
+Start with Padre=’Gigi’ ; 
+i. L’iterazione inizia alla row con il campo Padre=’Gigi’, cioè indica la row Padre di tutto per l’iterazione.
+ii. Poi da quello, prende il campo (della row significativa, che dovrebbe essere il padre del nodo) tramite la sintassi: prior <nome campo padre>, e quel campo si confronta con un campo del figlio (con le row restanti della tab) chiamandolo senza prefisso (es. Figlio)
+d. nvl (se è null else)
+i. (=> campoX ??0 )
+ii. es. --> select nvl(campoX,0) NomeCampo, …
+e. decode (come uno switch)
+i.  (=> campoX !=””? “pieno” : “vuoto”,)
+ii. es. --> select decode(campoX,’ ‘,”pieno”,”vuoto”) NomeCampo, …
+iii. es2. --> select decode (campoX, 1 , “uno”, 2, “due” , 3, “tre”, “else” ) NomeCampo,…
+f. case when (=> come una switch)
+i. es. --> case campoX when 1 then “uno” when 2 then “due” else “else” end NomeCampoCase , …
+Functionality
+1. Storico delle query fatte al db
+a. La view--> v$sql 
+b. Proprietà:
+i. Sql_text opp sql_fullText--> il testo della query
+ii. Last_load_time--> timeStamp dell’esecuzione
+iii. Sql_id--> id della singola istruzione
+iv. parsing_schema_name--> user che fa l’sql
+v. module--> il programma che esegue l’sql
+c. Applicazione:
+i. Mostra lo storico delle query da un certo timestamp:
+ii. Select v.sql_id as START_NNNNN_SQL_ID, v.last_load_time, v.parsing_schema_name, v.module, v.first_load_time, v.sql_text
+From v$sql v
+Where ‘2024-05-20/20:50:13’<=v.last_load_
+-- -- and upper(v.sql_text) like ‘SELECT%’
+-- -- AND UPPER (v.sql_text) like ‘INSERT%’
+-- -- and v.parsing_schema_name=’USER’
+Order by v.last_load_time desc ;
+2. Sessioni attive e disattive
+a. La view--> v$session
+b. Proprietà:
+i. Machine--> identificativo della macchina in cui sono state fatte la query
+ii. Username--> nome utente loggato nel db
+iii. Status--> status della sessione (active || inactive )
+3. Tutte le tabelle e le rispettive colonne
+a. Select * from all_tab_columns 
+Where
+Data_type=’<tipo della colonna>’ and
+Column_nam=’<nome della colonna>’ and
+Table_name=’<nome della tabella>’ and
+Owner=’<°°database/modulo>’
+4. Trova la tabella e la colonna che contiene un dato valore
+Genera una query con colonne (col. Valore, col. Tabella , col. Colonna), genera dunque una concatenizzazione di select  union select con una where con il valore inserito da cercare.
+a. Estrai l’elenco di tabelle e colonne che possono contenere il valore
+sql query: 
+select * from all_tab_column
+where data_type like ‘%CHAR%’ and – prende solo di tipo char e varchar (per poter usare l’union tra select )
+owner=’Modulo1’ ; -- per filtrare per modulo/db
+b. Copia il risultato (solo le colonne: table_name, column_name) e incolla nel file sql.txt (nel folder dov’è il toFindValue.bat)
+(ogni parola e separata da tab)
+c. Dentro il file toFindValueSQL.bat, setta il valore da trovare  (nella var. strToFind)
+d. Esegui toFindValue.bat, che scriverà nel file sqlScript.txt, la query complessiva da eseguire in sqlDeveloper
+(prima togliere l’ultima ‘union’ che è in più)
+e. Esegui la query e vedi i risultati
+
+PS: query:: 
+select t.* from ( (select  col1,tabName1 as tab,colName1 as col from tab1 where col1 like ‘<valore>’ ) union ( select col2 …) union …) t;
+
+- toFindValue.bat:
+@echo off
+Set strToFind=Ciccio
+Set file=sql.txt
+Set fileOut=sqlScript.txt
+
+Echo select t.* from(>>%fileOut%
+For /f “token=1-2 delims=	“ %%A in (%file%) do (
+Echo select %%B,’%%A’ as tab, ‘%%B’ as col from %%A where %%B like ‘%strToFIn% union>> %fileOut%
+)
+Echo ) t;>>%fileOut%
+
+
+
+** C#
+Tipi
+1.  var
+a. Viene assegnato il tipo al momento della inizializzazione della compilazione
+2.   dynamic
+a. Viene assegnato il tipo a run-time (si comporta da object)
+3.  ref
+a. E’ un tipo che passa il puntatore di una variabile (es. come parametro ad una funzione)
+4.   Out
+a. E’ un tipo che passa il puntatore, che deve essere modificato se no va in eccezione (come parametro ad una funzione)
+5. in
+a.  Il metodo non può assegnare un nuovo valore al parametro
+b. inizializza l'argomento prima di chiamare il metodo. Il compilatore potrebbe creare una variabile temporanea per contenere una copia dell'argomento dei parametri in.
+
+Cast implicito e esplicito
+1. cast implicito: fatto dal compilatore
+a. eg int x=10; long y=x;
+2. cast esplicito: fa il cast (usando tendenzialmente quando c’è perdita di informazione)
+a. eg double x=1.2; int y=(int) x;
+b. il cast esplicito e l’operatore as
+i. cast esplicito, se fallisce il cast da un eccezione
+ii. as: se fallisce il cast da null. 
+1. Eg. : IA1 a1=a as IA1; => a1=null;
+Upcast e downcast
+1. Upcast
+a. Eg. Figlio f=new Figlio(); 
+i. Padre p=f;
+b. Casting dalla classe figlio alla classe padre
+2. Downcast
+a. Eg. Padre p=new Figlio();
+i. Figlio f=(Figlio) p; // il cast è dovuto
+b. Casting dalla classe padre alla classe figlio
+i. Avendo sempre l’oggetto che assegna al livello (o livello °inferiore) di chi riceve
+1. Non si può mai assegnare da un insieme piccolo ad un insieme più grande 
+Operatori di conversione Implicita o Esplicita
+. permette di di castare un oggetto nel tipo di una variabile locale (es. int x1=objX; //var objX=new ObjX(); objX.x is int  ) 
+. def. public static implicit operator int (ObjX d) => d.varT; //=> int x1= objX;
+. def. public static explicit operator int (ObjX d) => d.varT; //=> int x1=(int) objX;
+. E.g.
+public readonly struct Digit
+{
+    private readonly byte digit;
+
+    public Digit(byte digit)
+    {
+        if (digit > 9)
+        {
+            throw new ArgumentOutOfRangeException(nameof(digit), "Digit cannot be greater than nine.");
+        }
+        this.digit = digit;
+    }
+
+    public static implicit operator byte(Digit d) => d.digit;
+    public static explicit operator Digit(byte b) => new Digit(b);
+
+    public override string ToString() => $"{digit}";
+}
+
+Overload Operatori
+. def. public static <classe dove sta> operator <operatore es. +>(<classe> operand) => <result>;
+. es. public static ObjX operator +(ObjX operand) => operand;
+. operatori: +,-,*,/,%,++,--,+=,-=,==,!=,<=,
+. parametri unari e binari (1 o 2 parametri)
+.. unari=> e.g. public static Fraction operator +(Fraction operand)=> new Fraction(operand.x+1); // equivale a => Fraction f1; var f2=+f1;
+.. binari=> e.g. public static Fraction operator +(Fraction left, Fraction right)
+        => new Fraction(left.numerator+ right.numerator); 
+// equivale a => Fraction f1; Fraction f2; var f3=f1+f2;
+Constructor constraint(Vincolo di costruttore)
+	Data un generics (es. una funzione)
+ Void get<T>() where T: <*>
+. where T: IObj1, IObj2
+T deve essere di questi tipi
+. where T: class ,,, where T: class? ,,, where T: struct ,,, where T: notnull
+È un oggetto,,, oggetto nullable, una struct , non è null
+.where T: new()
+{ T t=new T(); }
+Il where indica che T ha un costruttore senza parametri, da cui lo può instanziare
+PS: factory method (new con costruttore  con parametri)
+è un pattern creazionale che consente di delegare la creazione degli oggetti a una classe o funzione dedicata
+void Get<T> (Func<int,T> factory) where T: IClass
+{ T obj1= factory(10); …}
+Gli passa una funzione con dei parametri che torna un oggetto T
+	
+ Static constructions (costruttore statico)
+. costruttore per il tipo e non per l’istanza (esso è per il classico costruttore)
+. per ogni combinazione di tipo (per i diversi T,Y,…
+. viene chiamanto solo una volta, al primo utilizzo (prima dei classici costruttori)
+class SimpleClass<T,Y> where T: class, where Y: IY
+{
+    static SimpleClass()
+    {
+        If(typeof(T)==typeof(Y)) throw new Exception(“error T deve essere !=Y”); // es. fa i controlli non gestibili con il where (in cima) sui tipi
+    }
+}
+Interface and Abstract
+* Interface: Un'interfaccia definisce un contratto  (def. Livello di astrazione)
+* Abstract: Il modificatore abstract indica che l'oggetto in fase di modifica ha un'implementazione mancante o incompleta. 
+o Ha dei tag specifici: abstract e override
+public abstract class Employee : IWorker
+{
+    public abstract void Work();  // Must be implemented by derived classes
+
+    public void TakeBreak()
+    {…}
+}
+
+public class Manager : Employee
+{
+    public override void Work(){…}
+}
+Modificatore using
+global using
+sintassi=> global using <fully-qualified-namespace>;
+Quando si aggiunge il global modificatore a una using direttiva, si applica l'uso a tutti i file nella compilazione (in genere un progetto).
+e.g.=> global using System.Math; 
+static using
+La direttiva using static consente di assegnare un nome a un tipo i cui membri statici e tipi annidati sono accessibili senza specificare un nome di tipo.
+e.g. => using static System.Math;
+class A { float test()=>Sqrt(3*3 + 4*4); }
+PS: combo dei due modificatori (prec)=> global using static System.Math;
+Alias using
+Creare una direttiva alias using per semplificare la qualifica di un identificatore in uno spazio dei nomi o un tipo.
+e.g. => // Using alias directive for a class.
+using AliasToMyClass = NameSpace1.MyClass;
+
+// Using alias directive for a generic class.
+using UsingAlias = NameSpace2.MyClass<int>;
+Membro alias qualificato
+* Usa global:: quando una classe ha lo stesso nome di una variabile o di un namespace locale.
+o E.g. => global::A.x += A; // usa l’ A non locale
+* Usa :: quando hai creato un alias con using Alias = ... e vuoi essere certo che il codice punti al namespace, ignorando eventuali variabili con lo stesso nome dell'alias.
+o E.g. => using S = System.Net.Sockets; … S::Socket s = S as S::Socket; 
+// usa Socket dell’alias dell’using ‘S’
+
+
+
+
+Modificatori (di comportamento)
+Virtual
+Virtual è posto in metodi/proprietà Padre e nel figlio si mette override. (segna che quel metodo/proprietà è sovrascrivibile (dai figli) ) 
+Parola chiave che permette di usare un metodo/proprietà/etc figlio e non quella padre tramite ereditarietà
+Principalmente usata per quando si usa il polimorfismo.
+
+Class C1 {int virtual Get(){…}}  // => -1
+Class C2 : C1{int  override Get(){…}} // => 1
+Se si usa:
+C1 c1=new C2(); int x=c1.Get(); 
+// x=1 se si mette virtual (lo prende dal figlio C2) ,, 
+// x=-1 se non ha virtual (e si prende l’istanza del padre (dell’oggetto di  c1) )
+Abstract, override
+* Abstract posto in metodi/proprità di classi abstract ( public abstract class C1{…})
+o Es. public abstract void Work();  
+o I figli che implementano si mette override
+* Override, usato per qualsiasi metodo/proprietà per sovrascrivere da:
+o Interface, abstract, class
+
+Overriding 
+Riscrittura di un metodo.
+Una classe figlia (derivata) eredita dalla classe padre un metodo e lo vuole sovrascrivere con il proprio.
+Entrambi le parti (padre e figlia) devono essere concordi al sovrascrivere il metodo : il padre con la keyword: virtual/abstract, la figlia con: override ( se no da warning).
+Figlia => metodo1, metodo2, metodoPadre(sovrascitto)
+* e.g. 
+o padre=> p.c int virtual MethodPadre()=>0;
+o figlia => p.c int override MethodPadre()=>2;
+Supporta un corretto uso del polimorfismo 
+* e.g. 2
+Padre p=new Figlia();
+p.MethodPadre(); // => 2, perché figlia l’ha sovrascritto
+ new=> Shadowing (Method Hiding)
+Metodo nascosto, (versione diversa di overriding).
+Nasconde il metodo padre con lo stesso nome, e rende visibile il proprio.
+Figlia => metodo1, metodo2, metodoPadre(new, il proprio), methodPadre(nascosto)
+* e.g. 
+o padre=> p.c int MethodPadre()=>0;
+o figlia => p.c int new MethodPadre()=>2;
+Non supporta un corretto uso del polimorfismo 
+* e.g. 2
+Padre p=new Figlia();
+p.MethodPadre(); // => 0, perché figlia non l’ha sovrascritto, e al livello del padre il metodo nascosto è visibile
+Con il ‘new’ si potrebbe riscrivere una funzione con stesso nome ma con  diversa firma e ciò che ritorna.
+* E.g. 3
+o padre=> p.c int MethodPadre()=>0;
+o figlia => p.c string new MethodPadre()=>”figlia2”;
